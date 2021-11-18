@@ -1,4 +1,4 @@
-package com.example.androidtask_mathongo;
+package com.example.androidtask_mathongo.util;
 
 import android.content.Context;
 import java.io.IOException;

@@ -1,21 +1,17 @@
-package com.example.androidtask_mathongo;
+package com.example.androidtask_mathongo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.androidtask_mathongo.model.QuesAnsModel;
+import com.example.androidtask_mathongo.R;
+import com.example.androidtask_mathongo.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -86,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
 
         String jsonFileString = Utils.loadJson(getApplicationContext(), "gravitation.json");
         Gson gson = new Gson();
-        Type listUserType = new TypeToken<List<GravitationModel>>() { }.getType();
+        Type listUserType = new TypeToken<List<QuesAnsModel>>() { }.getType();
 
-        List<GravitationModel> questionAnswerList = gson.fromJson(jsonFileString, listUserType);
+        List<QuesAnsModel> questionAnswerList = gson.fromJson(jsonFileString, listUserType);
         assert questionAnswerList != null;
-        for(GravitationModel gravitationModel : questionAnswerList) {
-            Log.e(TAG, "onCreate: "+  gravitationModel.getQuestion().getQuestionText());
+        for(QuesAnsModel quesAnsModel : questionAnswerList) {
+            Log.e(TAG, "onCreate: "+  quesAnsModel.getQuestion().getQuestionText());
         }
     }
 

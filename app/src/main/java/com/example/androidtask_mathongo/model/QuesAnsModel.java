@@ -1,8 +1,8 @@
-package com.example.androidtask_mathongo;
+package com.example.androidtask_mathongo.model;
 
 import java.util.List;
 
-public class GravitationModel {
+public class QuesAnsModel {
 
     private Question question;
     private List<Option> options;
