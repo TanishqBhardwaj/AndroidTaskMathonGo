@@ -1,21 +1,30 @@
 package com.example.androidtask_mathongo.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.model.QuesAnsModel;
 import com.example.androidtask_mathongo.R;
 import com.example.androidtask_mathongo.util.Utils;
+import com.example.androidtask_mathongo.viewmodel.QuesAnsViewModel;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+
+    private QuesAnsViewModel quesAnsViewModel;
+    private List<QuesAnsEntity> quesAnsEntities;
 
 //    private String doubleEscapeTeX(String s) {
 //        String t="";
@@ -80,15 +89,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String jsonFileString = Utils.loadJson(getApplicationContext(), "gravitation.json");
-        Gson gson = new Gson();
-        Type listUserType = new TypeToken<List<QuesAnsModel>>() { }.getType();
-
-        List<QuesAnsModel> questionAnswerList = gson.fromJson(jsonFileString, listUserType);
-        assert questionAnswerList != null;
-        for(QuesAnsModel quesAnsModel : questionAnswerList) {
-            Log.e(TAG, "onCreate: "+  quesAnsModel.getQuestion().getQuestionText());
-        }
+        quesAnsViewModel = new ViewModelProvider(this).get(QuesAnsViewModel.class);
+        quesAnsViewModel.getQuesAnsList().observe(this, new Observer<List<QuesAnsEntity>>() {
+            @Override
+            public void onChanged(List<QuesAnsEntity> quesAnsEntityList) {
+                quesAnsEntities = new ArrayList<>(quesAnsEntityList);
+                Log.e(TAG, "onChanged: " + quesAnsEntities.size());
+            }
+        });
     }
 
 

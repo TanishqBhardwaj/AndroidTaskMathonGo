@@ -4,8 +4,17 @@ import java.util.List;
 
 public class QuesAnsModel {
 
+    private String id;
     private Question question;
     private List<Option> options;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Question getQuestion() {
         return question;
