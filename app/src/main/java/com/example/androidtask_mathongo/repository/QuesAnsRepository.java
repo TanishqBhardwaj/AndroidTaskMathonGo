@@ -30,7 +30,9 @@ public class QuesAnsRepository {
     }
 
     public void fetchDataFromJson() {
-        String jsonFileString = Utils.loadJson(context, "gravitation.json");
+        String jsonFileString = "", quesNo = "", quesTag = "";
+        int count = 0;
+        jsonFileString = Utils.loadJson(context, "gravitation.json");
         Gson gson = new Gson();
         Type listUserType = new TypeToken<List<QuesAnsModel>>() { }.getType();
 
@@ -40,8 +42,12 @@ public class QuesAnsRepository {
 
         //converting json list to local list form
         for(QuesAnsModel quesAnsModel : questionAnswerList) {
+            ++count;
+
             QuesAnsEntity quesAnsEntity = new QuesAnsEntity(
                     quesAnsModel.getId(),
+                    getQuesNo(count),
+                    getQuesTag(quesAnsModel),
                     quesAnsModel.getQuestion().getQuestionText(),
                     quesAnsModel.getQuestion().getImage(),
                     quesAnsModel.getOptions()
@@ -52,6 +58,20 @@ public class QuesAnsRepository {
 
         //storing data to local
         insertQuesAnsToLocal(quesAnsEntityList);
+    }
+
+    private String getQuesNo(int count) {
+        if(count > 9) {
+            return String.valueOf(count);
+        }
+        else {
+            return "0" + count;
+        }
+    }
+
+    //concatenate exam and paper year
+    private String getQuesTag(QuesAnsModel quesAnsModel) {
+        return quesAnsModel.getExams().get(0) + " " + quesAnsModel.getPreviousYearPapers().get(0);
     }
 
     public void insertQuesAnsToLocal(List<QuesAnsEntity> quesAnsEntityList) {

@@ -4,10 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.example.androidtask_mathongo.adapter.QuestionAdapter;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.model.QuesAnsModel;
 import com.example.androidtask_mathongo.R;
@@ -25,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
     private QuesAnsViewModel quesAnsViewModel;
     private List<QuesAnsEntity> quesAnsEntities;
+    private TextView textView;
+    private Spinner spinnerAttempted;
+    private RecyclerView recyclerViewQuestions;
+    private QuestionAdapter questionAdapter;
 
 //    private String doubleEscapeTeX(String s) {
 //        String t="";
@@ -89,15 +100,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setView();
+        setQuesAnsViewModel();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setQuesAnsViewModel() {
         quesAnsViewModel = new ViewModelProvider(this).get(QuesAnsViewModel.class);
-        quesAnsViewModel.getQuesAnsList().observe(this, new Observer<List<QuesAnsEntity>>() {
-            @Override
-            public void onChanged(List<QuesAnsEntity> quesAnsEntityList) {
-                quesAnsEntities = new ArrayList<>(quesAnsEntityList);
-                Log.e(TAG, "onChanged: " + quesAnsEntities.size());
-            }
+        quesAnsViewModel.getQuesAnsList().observe(this, quesAnsEntityList -> {
+            quesAnsEntities = new ArrayList<>(quesAnsEntityList);
+            textView.setText(quesAnsEntities.size() + " Qs");
+            questionAdapter = new QuestionAdapter(quesAnsEntities);
+            recyclerViewQuestions.setAdapter(questionAdapter);
         });
     }
 
+    private void setView() {
+        textView = findViewById(R.id.text_view_no_of_ques);
+        spinnerAttempted = findViewById(R.id.spinner);
+        recyclerViewQuestions = findViewById(R.id.recycler_view_questions);
+        recyclerViewQuestions.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        recyclerViewQuestions.setHasFixedSize(true);
 
+        String[] spinnerItems = new String[]{"Attempted", "Not Attempted"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, spinnerItems);
+        spinnerAttempted.setAdapter(spinnerAdapter);
+    }
+
+    private void setListeners() {
+
+    }
 }

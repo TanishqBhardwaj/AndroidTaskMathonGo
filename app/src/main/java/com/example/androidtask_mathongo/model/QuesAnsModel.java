@@ -5,6 +5,8 @@ import java.util.List;
 public class QuesAnsModel {
 
     private String id;
+    private List<String> exams;
+    private List<String> previousYearPapers;
     private Question question;
     private List<Option> options;
 
@@ -14,6 +16,22 @@ public class QuesAnsModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<String> getExams() {
+        return exams;
+    }
+
+    public void setExams(List<String> exams) {
+        this.exams = exams;
+    }
+
+    public List<String> getPreviousYearPapers() {
+        return previousYearPapers;
+    }
+
+    public void setPreviousYearPapers(List<String> previousYearPapers) {
+        this.previousYearPapers = previousYearPapers;
     }
 
     public Question getQuestion() {

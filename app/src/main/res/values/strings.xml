@@ -2,4 +2,7 @@
     <string name="app_name">AndroidTask-MathonGo</string>
     <string name="marks">Marks</string>
     <string name="gravitation">Gravitation</string>
+    <string name="showing">Showing</string>
+    <string name="low_input_high_output_chapter">| Low Input High Output Chapter</string>
+    <string name="no_of_ques">0 Qs</string>
 </resources>
