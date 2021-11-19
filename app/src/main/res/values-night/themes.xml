@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.AndroidTaskMathonGo" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimary">@color/blue_theme</item>
         <item name="colorPrimaryVariant">@color/blue_theme</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->

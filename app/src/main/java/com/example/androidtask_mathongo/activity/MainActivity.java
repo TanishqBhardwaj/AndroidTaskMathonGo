@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -110,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
         quesAnsViewModel.getQuesAnsList().observe(this, quesAnsEntityList -> {
             quesAnsEntities = new ArrayList<>(quesAnsEntityList);
             textView.setText(quesAnsEntities.size() + " Qs");
-            questionAdapter = new QuestionAdapter(quesAnsEntities);
-            recyclerViewQuestions.setAdapter(questionAdapter);
+            setQuestionAdapter();
         });
     }
 
@@ -126,6 +126,17 @@ public class MainActivity extends AppCompatActivity {
         String[] spinnerItems = new String[]{"Attempted", "Not Attempted"};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, spinnerItems);
         spinnerAttempted.setAdapter(spinnerAdapter);
+    }
+
+    private void setQuestionAdapter() {
+        questionAdapter = new QuestionAdapter(quesAnsEntities);
+        recyclerViewQuestions.setAdapter(questionAdapter);
+
+        questionAdapter.setOnItemClickListener(position -> {
+            Intent intent = new Intent(this, OptionActivity.class);
+            intent.putExtra(String.valueOf(OptionActivity.position), position);
+            startActivity(intent);
+        });
     }
 
     private void setListeners() {

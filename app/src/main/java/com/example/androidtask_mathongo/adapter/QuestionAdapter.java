@@ -13,9 +13,18 @@ import java.util.List;
 public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder> {
 
     private List<QuesAnsEntity> quesAnsEntityList;
+    private OnItemClickListener mListener;
 
     public QuestionAdapter(List<QuesAnsEntity> quesAnsEntityList) {
         this.quesAnsEntityList = quesAnsEntityList;
+    }
+
+    public interface OnItemClickListener {
+        void onClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
     }
 
     @NonNull
@@ -23,7 +32,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     public QuestionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_question,
                 parent, false);
-        return new QuestionViewHolder(view);
+        return new QuestionViewHolder(view, mListener);
     }
 
     @Override
@@ -45,11 +54,20 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
         private TextView textViewQuesTitle;
         private TextView textViewTag;
 
-        public QuestionViewHolder(@NonNull View itemView) {
+        public QuestionViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             textViewQuesNo = itemView.findViewById(R.id.text_view_ques_no);
             textViewQuesTitle = itemView.findViewById(R.id.text_view_ques_title);
             textViewTag = itemView.findViewById(R.id.text_view_tag);
+
+            itemView.setOnClickListener(view -> {
+                if(listener != null) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION) {
+                        listener.onClick(position);
+                    }
+                }
+            });
         }
     }
 }

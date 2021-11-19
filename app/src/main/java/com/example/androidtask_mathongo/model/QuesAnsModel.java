@@ -10,6 +10,15 @@ public class QuesAnsModel {
     private Question question;
     private List<Option> options;
 
+    public QuesAnsModel(String id, List<String> exams, List<String> previousYearPapers,
+                        Question question, List<Option> options) {
+        this.id = id;
+        this.exams = exams;
+        this.previousYearPapers = previousYearPapers;
+        this.question = question;
+        this.options = options;
+    }
+
     public String getId() {
         return id;
     }
@@ -56,6 +65,13 @@ public class QuesAnsModel {
         private String image;
         private boolean isCorrect;
 
+        public Option(String id, String text, String image, boolean isCorrect) {
+            this.id = id;
+            this.text = text;
+            this.image = image;
+            this.isCorrect = isCorrect;
+        }
+
         public String getId() {
             return id;
         }
@@ -92,6 +108,11 @@ public class QuesAnsModel {
     public static class Question {
         private String text;
         private String image;
+
+        public Question(String text, String image) {
+            this.text = text;
+            this.image = image;
+        }
 
         public String getQuestionText() {
             return text;

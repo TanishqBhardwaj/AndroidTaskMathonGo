@@ -30,9 +30,8 @@ public class QuesAnsRepository {
     }
 
     public void fetchDataFromJson() {
-        String jsonFileString = "", quesNo = "", quesTag = "";
+        String jsonFileString = Utils.loadJson(context, "gravitation.json");
         int count = 0;
-        jsonFileString = Utils.loadJson(context, "gravitation.json");
         Gson gson = new Gson();
         Type listUserType = new TypeToken<List<QuesAnsModel>>() { }.getType();
 

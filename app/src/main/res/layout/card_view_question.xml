@@ -45,14 +45,18 @@
 
         <TextView
             android:id="@+id/text_view_tag"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="JEE Main"
-            android:textSize="14sp"
-            android:textColor="@color/text_light_color"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/sf_pro_display_regular"
+            android:text="JEE Main"
+            android:textColor="@color/text_light_color"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_view_ques_no"
             app:layout_constraintTop_toBottomOf="@+id/text_view_ques_title" />
 
