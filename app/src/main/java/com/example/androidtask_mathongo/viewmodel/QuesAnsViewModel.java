@@ -4,10 +4,9 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
+import com.example.androidtask_mathongo.local.entity.OptionEntity;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.repository.QuesAnsRepository;
-
 import java.util.List;
 
 public class QuesAnsViewModel extends AndroidViewModel {
@@ -21,5 +20,14 @@ public class QuesAnsViewModel extends AndroidViewModel {
 
     public LiveData<List<QuesAnsEntity>> getQuesAnsList() {
         return quesAnsRepository.getAllQuesAns();
+    }
+
+    public void updateOption(QuesAnsEntity quesAnsEntity, int position) {
+        quesAnsRepository.insertOption(new OptionEntity(quesAnsEntity.getId(),
+                quesAnsEntity.getOptionList().get(position).getId(), true));
+    }
+
+    public LiveData<List<OptionEntity>> getAllOptions() {
+        return quesAnsRepository.getOptionEntityList();
     }
 }

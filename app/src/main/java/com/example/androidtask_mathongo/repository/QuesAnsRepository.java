@@ -2,8 +2,10 @@ package com.example.androidtask_mathongo.repository;
 
 import android.content.Context;
 import androidx.lifecycle.LiveData;
+import com.example.androidtask_mathongo.local.dao.OptionDao;
 import com.example.androidtask_mathongo.local.dao.QuesAnsDao;
 import com.example.androidtask_mathongo.local.database.QuesAnsDatabase;
+import com.example.androidtask_mathongo.local.entity.OptionEntity;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.model.QuesAnsModel;
 import com.example.androidtask_mathongo.util.Utils;
@@ -13,20 +15,23 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import io.reactivex.Completable;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class QuesAnsRepository {
 
     private QuesAnsDao quesAnsDao;
+    private OptionDao optionDao;
     private Context context;
     private LiveData<List<QuesAnsEntity>> allQuesAns;
+    private LiveData<List<OptionEntity>> optionEntityList;
 
     public QuesAnsRepository(Context context) {
         this.context = context;
         quesAnsDao = QuesAnsDatabase.getInstance(context).quesAnsDao();
+        optionDao = QuesAnsDatabase.getInstance(context).optionDao();
         fetchDataFromJson();
         allQuesAns = quesAnsDao.getAllQuesAns();
+        optionEntityList = optionDao.getAllOptions();
     }
 
     public void fetchDataFromJson() {
@@ -85,7 +90,23 @@ public class QuesAnsRepository {
         }
     }
 
+    public void insertOption(OptionEntity optionEntity) {
+        try {
+            Completable.fromAction(() -> {
+                optionDao.insert(optionEntity);
+            }).subscribeOn(Schedulers.io())
+                    .subscribe();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public LiveData<List<QuesAnsEntity>> getAllQuesAns() {
         return allQuesAns;
+    }
+
+    public LiveData<List<OptionEntity>> getOptionEntityList() {
+        return optionEntityList;
     }
 }

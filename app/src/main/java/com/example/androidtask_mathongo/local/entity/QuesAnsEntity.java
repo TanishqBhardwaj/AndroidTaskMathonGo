@@ -3,7 +3,6 @@ package com.example.androidtask_mathongo.local.entity;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
-import androidx.room.OnConflictStrategy;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 import com.example.androidtask_mathongo.local.converter.OptionConverter;
@@ -28,13 +27,13 @@ public class QuesAnsEntity {
     @Ignore
     public QuesAnsEntity() {}
 
-    public QuesAnsEntity(String id, String quesNo, String quesTag, String questionText, String questionImage,
-                         List<QuesAnsModel.Option> optionList) {
+    public QuesAnsEntity(String id, String quesNo, String quesTag, String questionText,
+                         String questionImage, List<QuesAnsModel.Option> optionList) {
         this.id = id;
         this.quesNo = quesNo;
         this.quesTag = quesTag;
-        this.questionText =  questionText;
-        this.questionImage =  questionImage;
+        this.questionText = questionText;
+        this.questionImage = questionImage;
         this.optionList = optionList;
     }
 

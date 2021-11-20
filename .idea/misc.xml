@@ -6,8 +6,8 @@
         <entry key="app/src/main/res/drawable/dotted.xml" value="0.2462962962962963" />
         <entry key="app/src/main/res/drawable/ic_horizontal_break_line.xml" value="0.2462962962962963" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_option.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/card_view_option.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_option.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/card_view_option.xml" value="0.45" />
         <entry key="app/src/main/res/layout/card_view_question.xml" value="0.335" />
         <entry key="app/src/main/res/layout/spinner_item.xml" value="0.20199275362318841" />
       </map>

@@ -4,18 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.androidtask_mathongo.R;
 import com.example.androidtask_mathongo.adapter.OptionAdapter;
-import com.example.androidtask_mathongo.adapter.QuestionAdapter;
+import com.example.androidtask_mathongo.local.entity.OptionEntity;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.viewmodel.QuesAnsViewModel;
-
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,19 +21,26 @@ public class OptionActivity extends AppCompatActivity {
     public static final int position = 0;
 
     private QuesAnsViewModel quesAnsViewModel;
-    private List<QuesAnsEntity> quesAnsEntities;
+    private List<QuesAnsEntity> quesAnsEntities = new ArrayList<>();
+    private List<OptionEntity> optionEntities = new ArrayList<>();
 
     private ImageView imageViewBack;
     private TextView textViewNoOfQues;
     private TextView textViewQuestion;
     private TextView textViewTag;
     private RecyclerView recyclerViewOptions;
+    private Button buttonCheckAnswer;
+    private ImageView imageViewNextQues;
+    private ImageView imageViewPrevQues;
     private OptionAdapter optionAdapter;
+    private int pos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_option);
+
+        pos = getIntent().getIntExtra(String.valueOf(position), 0);
 
         setView();
         setListeners();
@@ -49,6 +53,9 @@ public class OptionActivity extends AppCompatActivity {
         textViewQuestion = findViewById(R.id.text_view_question_detail);
         textViewTag = findViewById(R.id.text_view_tag_detail);
         recyclerViewOptions = findViewById(R.id.recycler_view_options);
+        buttonCheckAnswer = findViewById(R.id.check_ans_button);
+        imageViewNextQues = findViewById(R.id.image_view_next_ques);
+        imageViewPrevQues = findViewById(R.id.image_view_prev_ques);
         recyclerViewOptions.setLayoutManager(new LinearLayoutManager(this) {
                                                  @Override
                                                  public boolean canScrollVertically() {
@@ -62,22 +69,66 @@ public class OptionActivity extends AppCompatActivity {
         quesAnsViewModel = new ViewModelProvider(this).get(QuesAnsViewModel.class);
         quesAnsViewModel.getQuesAnsList().observe(this, quesAnsEntityList -> {
             quesAnsEntities = new ArrayList<>(quesAnsEntityList);
-            setUI(getIntent().getIntExtra(String.valueOf(position), 0));
+            setUI(pos);
+        });
+        quesAnsViewModel.getAllOptions().observe(this, optionEntityList -> {
+            optionEntities = new ArrayList<>(optionEntityList);
         });
     }
 
     private void setUI(int position) {
-        textViewNoOfQues.setText("Q" + (position+1) + " (Single Correct)");
-        textViewQuestion.setText(quesAnsEntities.get(position).getQuestionText());
-        textViewTag.setText(quesAnsEntities.get(position).getQuesTag());
+        //check whether pos in range when called from setListeners()
+        if(position<quesAnsEntities.size() && position>=0) {
+            textViewNoOfQues.setText("Q" + (position+1) + " (Single Correct)");
+            textViewQuestion.setText(quesAnsEntities.get(position).getQuestionText());
+            textViewTag.setText(quesAnsEntities.get(position).getQuesTag());
 
-        optionAdapter = new OptionAdapter(quesAnsEntities, position);
-        recyclerViewOptions.setAdapter(optionAdapter);
+            imageViewNextQues.setImageResource(R.drawable.ic_next_button);
+            imageViewPrevQues.setImageResource(R.drawable.ic_back_button);
+
+            setOptionAdapter(position);
+        }
+
+        //disable prev button when on 1st ques
+        if(position==0) {
+            imageViewPrevQues.setImageResource(R.drawable.ic_prev_button_disabled);
+        }
+
+        //disable next button when on last ques
+        if(position==(quesAnsEntities.size()-1)) {
+            imageViewNextQues.setImageResource(R.drawable.ic_next_button_disabled);
+        }
+
+        //adjusting pos value
+        if(position>=quesAnsEntities.size()) {
+            --pos;
+        }
+
+        if(position<0) {
+            ++pos;
+        }
     }
 
     private void setListeners() {
-        imageViewBack.setOnClickListener((view) -> {
+        imageViewBack.setOnClickListener(view -> {
             onBackPressed();
+        });
+
+        imageViewNextQues.setOnClickListener(view -> {
+            setUI(++pos);
+        });
+
+        imageViewPrevQues.setOnClickListener(view -> {
+            setUI(--pos);
+        });
+    }
+
+    private void setOptionAdapter(int position) {
+        optionAdapter = new OptionAdapter(quesAnsEntities, position, this, optionEntities);
+        recyclerViewOptions.setAdapter(optionAdapter);
+
+        optionAdapter.setOnItemClickListener(position1 -> {
+            quesAnsViewModel.updateOption(quesAnsEntities.get(position), position1);
         });
     }
 }
