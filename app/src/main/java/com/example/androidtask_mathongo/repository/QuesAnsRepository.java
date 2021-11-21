@@ -23,7 +23,6 @@ public class QuesAnsRepository {
     private OptionDao optionDao;
     private Context context;
     private LiveData<List<QuesAnsEntity>> allQuesAns;
-    private LiveData<List<OptionEntity>> optionEntityList;
 
     public QuesAnsRepository(Context context) {
         this.context = context;
@@ -31,7 +30,6 @@ public class QuesAnsRepository {
         optionDao = QuesAnsDatabase.getInstance(context).optionDao();
         fetchDataFromJson();
         allQuesAns = quesAnsDao.getAllQuesAns();
-        optionEntityList = optionDao.getAllOptions();
     }
 
     public void fetchDataFromJson() {
@@ -80,10 +78,10 @@ public class QuesAnsRepository {
 
     public void insertQuesAnsToLocal(List<QuesAnsEntity> quesAnsEntityList) {
         try {
-            Completable.fromAction(() -> {
-                quesAnsDao.insert(quesAnsEntityList);
-            }).subscribeOn(Schedulers.io())
-                    .subscribe();
+                    Completable.fromAction(() -> {
+                        quesAnsDao.insert(quesAnsEntityList);
+                    }).subscribeOn(Schedulers.io())
+                            .subscribe();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +104,17 @@ public class QuesAnsRepository {
         return allQuesAns;
     }
 
-    public LiveData<List<OptionEntity>> getOptionEntityList() {
-        return optionEntityList;
+    public List<OptionEntity> getOptionEntityList() {
+        List<OptionEntity> optionEntities = new ArrayList<>();
+        try {
+            Completable.fromAction(() -> {
+                optionEntities.addAll(optionDao.getAllOptions());
+            }).subscribeOn(Schedulers.io())
+                    .subscribe();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return optionEntities;
     }
 }

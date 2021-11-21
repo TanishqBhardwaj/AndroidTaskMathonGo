@@ -1,6 +1,5 @@
 package com.example.androidtask_mathongo.local.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -29,5 +28,5 @@ public interface OptionDao {
     void deleteAll();
 
     @Query("select * from option_table")
-    LiveData<List<OptionEntity>> getAllOptions();
+    List<OptionEntity> getAllOptions();
 }

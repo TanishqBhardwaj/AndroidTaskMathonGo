@@ -10,11 +10,18 @@ import com.example.androidtask_mathongo.local.entity.OptionEntity;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.viewmodel.QuesAnsViewModel;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
 
 public class OptionActivity extends AppCompatActivity {
 
@@ -33,14 +40,14 @@ public class OptionActivity extends AppCompatActivity {
     private ImageView imageViewNextQues;
     private ImageView imageViewPrevQues;
     private OptionAdapter optionAdapter;
-    private int pos = 0;
+    private int quesPos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_option);
 
-        pos = getIntent().getIntExtra(String.valueOf(position), 0);
+        quesPos = getIntent().getIntExtra(String.valueOf(position), 0);
 
         setView();
         setListeners();
@@ -65,14 +72,26 @@ public class OptionActivity extends AppCompatActivity {
         recyclerViewOptions.setHasFixedSize(true);
     }
 
+    private void setListeners() {
+        imageViewBack.setOnClickListener(view -> {
+            onBackPressed();
+        });
+
+        imageViewNextQues.setOnClickListener(view -> {
+            setUI(++quesPos);
+        });
+
+        imageViewPrevQues.setOnClickListener(view -> {
+            setUI(--quesPos);
+        });
+    }
+
     private void setQuesAnsViewModel() {
         quesAnsViewModel = new ViewModelProvider(this).get(QuesAnsViewModel.class);
+        optionEntities = quesAnsViewModel.getAllOptions();
         quesAnsViewModel.getQuesAnsList().observe(this, quesAnsEntityList -> {
             quesAnsEntities = new ArrayList<>(quesAnsEntityList);
-            setUI(pos);
-        });
-        quesAnsViewModel.getAllOptions().observe(this, optionEntityList -> {
-            optionEntities = new ArrayList<>(optionEntityList);
+            setUI(quesPos);
         });
     }
 
@@ -87,8 +106,17 @@ public class OptionActivity extends AppCompatActivity {
             imageViewPrevQues.setImageResource(R.drawable.ic_back_button);
 
             setOptionAdapter(position);
+            setCheckAnswerButton(position);
         }
 
+        //adjust prev and next button
+        setPrevAndNextButton(position);
+
+        //adjusting pos value
+        adjustPosValue(position);
+    }
+
+    private void setPrevAndNextButton(int position) {
         //disable prev button when on 1st ques
         if(position==0) {
             imageViewPrevQues.setImageResource(R.drawable.ic_prev_button_disabled);
@@ -98,37 +126,41 @@ public class OptionActivity extends AppCompatActivity {
         if(position==(quesAnsEntities.size()-1)) {
             imageViewNextQues.setImageResource(R.drawable.ic_next_button_disabled);
         }
+    }
 
-        //adjusting pos value
+    private void adjustPosValue(int position) {
         if(position>=quesAnsEntities.size()) {
-            --pos;
+            --quesPos;
         }
 
         if(position<0) {
-            ++pos;
+            ++quesPos;
         }
-    }
-
-    private void setListeners() {
-        imageViewBack.setOnClickListener(view -> {
-            onBackPressed();
-        });
-
-        imageViewNextQues.setOnClickListener(view -> {
-            setUI(++pos);
-        });
-
-        imageViewPrevQues.setOnClickListener(view -> {
-            setUI(--pos);
-        });
     }
 
     private void setOptionAdapter(int position) {
         optionAdapter = new OptionAdapter(quesAnsEntities, position, this, optionEntities);
         recyclerViewOptions.setAdapter(optionAdapter);
 
-        optionAdapter.setOnItemClickListener(position1 -> {
-            quesAnsViewModel.updateOption(quesAnsEntities.get(position), position1);
+        optionAdapter.setOnItemClickListener(optionPos -> {
+            quesAnsViewModel.updateOption(quesAnsEntities.get(position), optionPos);
+            updateOptionList(position, optionPos);
         });
+    }
+
+    //adjust card state
+    private void updateOptionList(int position, int optionPos) {
+        List<OptionEntity> optionEntityList = quesAnsViewModel.getUpdatedOptionList(optionEntities,
+                quesAnsEntities.get(position), optionPos);
+        optionAdapter.updateList(quesAnsEntities, optionEntityList);
+    }
+
+    private void setCheckAnswerButton(int position) {
+        if(quesAnsViewModel.setCheckAnswerButton(optionEntities, quesAnsEntities.get(position))) {
+            buttonCheckAnswer.setEnabled(true);
+        }
+        else {
+            buttonCheckAnswer.setEnabled(false);
+        }
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidTask-MathonGo</string>
+    <string name="app_name">MathonGo</string>
     <string name="marks">MARKS</string>
     <string name="gravitation">Gravitation</string>
     <string name="showing">Showing</string>

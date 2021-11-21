@@ -1,6 +1,7 @@
 package com.example.androidtask_mathongo.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import com.example.androidtask_mathongo.model.QuesAnsModel;
 import com.google.android.material.card.MaterialCardView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionViewHolder> {
@@ -54,6 +57,9 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         if(isSelected(quesAnsEntityList.get(quesPosition), position)) {
             holder.setOnClickOption(context);
         }
+        else {
+            holder.setRemoveClickOption(context);
+        }
     }
 
     private boolean isSelected(QuesAnsEntity quesAnsEntity, int position) {
@@ -65,6 +71,12 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         }
 
         return false;
+    }
+
+    public void updateList(List<QuesAnsEntity> quesAnsEntities, List<OptionEntity> optionEntities) {
+        quesAnsEntityList = new ArrayList<>(quesAnsEntities);
+        optionEntityList = new ArrayList<>(optionEntities);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -105,6 +117,11 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         private void setOnClickOption(Context context) {
             cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(R.color.blue_theme));
             cardViewOption.setStrokeColor(context.getResources().getColor(R.color.blue_theme));
+        }
+
+        private void setRemoveClickOption(Context context) {
+            cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(R.color.option_unselected_color));
+            cardViewOption.setStrokeColor(context.getResources().getColor(R.color.option_unselected_color));
         }
     }
 }
