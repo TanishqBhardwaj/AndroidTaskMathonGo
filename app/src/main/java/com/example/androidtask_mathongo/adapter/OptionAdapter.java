@@ -176,12 +176,26 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
             cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(
                     R.color.right_ans_color));
             cardViewOption.setStrokeColor(context.getResources().getColor(R.color.right_ans_color));
+            cardViewAnsType.setVisibility(View.VISIBLE);
+            textViewAnsType.setVisibility(View.VISIBLE);
+            cardViewAnsType.setStrokeColor(context.getResources().getColor(
+                    R.color.right_ans_color));
+            textViewAnsType.setText(R.string.you_marked_correct_answer);
+            textViewAnsType.setTextColor(context.getResources().getColor(
+                    R.color.right_ans_color));
         }
 
         private void wrongAnswerState(Context context) {
             cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(
                     R.color.wrong_ans_color));
             cardViewOption.setStrokeColor(context.getResources().getColor(R.color.wrong_ans_color));
+            cardViewAnsType.setVisibility(View.VISIBLE);
+            textViewAnsType.setVisibility(View.VISIBLE);
+            cardViewAnsType.setStrokeColor(context.getResources().getColor(
+                    R.color.wrong_ans_color));
+            textViewAnsType.setText(R.string.you_marked_incorrect_answer);
+            textViewAnsType.setTextColor(context.getResources().getColor(
+                    R.color.wrong_ans_color));
         }
     }
 }

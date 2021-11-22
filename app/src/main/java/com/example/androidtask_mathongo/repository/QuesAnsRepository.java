@@ -108,20 +108,6 @@ public class QuesAnsRepository {
         return allQuesAns;
     }
 
-//    public List<OptionEntity> getOptionEntityList() {
-//        List<OptionEntity> optionEntities = new ArrayList<>();
-//        try {
-//            Completable.fromAction(() -> {
-//                optionEntities.addAll(optionDao.getAllOptions());
-//            }).subscribeOn(Schedulers.io())
-//                    .subscribe();
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return optionEntities;
-//    }
-
     public LiveData<List<OptionEntity>> getOptionEntityList() {
         return allOptions;
     }

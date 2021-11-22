@@ -111,7 +111,6 @@ public class OptionActivity extends AppCompatActivity {
 
     private void setQuesAnsViewModel() {
         quesAnsViewModel = new ViewModelProvider(this).get(QuesAnsViewModel.class);
-//        optionEntities = quesAnsViewModel.getAllOptions();
         quesAnsViewModel.getAllOptions().observe(this, optionEntityList -> {
             optionEntities = new ArrayList<>(optionEntityList);
         });
@@ -183,7 +182,6 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     private void setOptionAdapter(int position) {
-//        optionEntities = quesAnsViewModel.getAllOptions();
         optionAdapter = new OptionAdapter(quesAnsEntities, position, this, optionEntities);
         recyclerViewOptions.setAdapter(optionAdapter);
 
@@ -201,7 +199,6 @@ public class OptionActivity extends AppCompatActivity {
 
     //adjust card state
     private void updateOptionList(int position, int optionPos) {
-//        optionEntities = quesAnsViewModel.getAllOptions();
         List<OptionEntity> optionEntityList = quesAnsViewModel.getUpdatedOptionList(optionEntities,
                 quesAnsEntities.get(position), optionPos);
         optionAdapter.updateList(quesAnsEntities, optionEntityList, Constants.OPTION_SELECTED);
