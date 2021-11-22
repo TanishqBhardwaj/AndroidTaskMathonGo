@@ -9,14 +9,16 @@ public class QuesAnsModel {
     private List<String> previousYearPapers;
     private Question question;
     private List<Option> options;
+    private Solution solution;
 
     public QuesAnsModel(String id, List<String> exams, List<String> previousYearPapers,
-                        Question question, List<Option> options) {
+                        Question question, List<Option> options, Solution solution) {
         this.id = id;
         this.exams = exams;
         this.previousYearPapers = previousYearPapers;
         this.question = question;
         this.options = options;
+        this.solution = solution;
     }
 
     public String getId() {
@@ -57,6 +59,14 @@ public class QuesAnsModel {
 
     public void setOptions(List<Option> options) {
         this.options = options;
+    }
+
+    public Solution getSolution() {
+        return solution;
+    }
+
+    public void setSolution(Solution solution) {
+        this.solution = solution;
     }
 
     public static class Option {
@@ -119,6 +129,32 @@ public class QuesAnsModel {
         }
 
         public void setQuestionText(String text) {
+            this.text = text;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+    }
+
+    public static class Solution {
+        private String text;
+        private String image;
+
+        public Solution(String text, String image) {
+            this.text = text;
+            this.image = image;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
             this.text = text;
         }
 

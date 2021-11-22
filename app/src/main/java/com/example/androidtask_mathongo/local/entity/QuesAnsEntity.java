@@ -20,6 +20,8 @@ public class QuesAnsEntity {
     private String quesTag;
     private String questionText;
     private String questionImage;
+    private String solutionText;
+    private String solutionImage;
 
     @TypeConverters({OptionConverter.class})
     private List<QuesAnsModel.Option> optionList;
@@ -28,13 +30,16 @@ public class QuesAnsEntity {
     public QuesAnsEntity() {}
 
     public QuesAnsEntity(String id, String quesNo, String quesTag, String questionText,
-                         String questionImage, List<QuesAnsModel.Option> optionList) {
+                         String questionImage, List<QuesAnsModel.Option> optionList,
+                         String solutionText, String solutionImage) {
         this.id = id;
         this.quesNo = quesNo;
         this.quesTag = quesTag;
         this.questionText = questionText;
         this.questionImage = questionImage;
         this.optionList = optionList;
+        this.solutionText = solutionText;
+        this.solutionImage = solutionImage;
     }
 
     public int get_id() {
@@ -83,6 +88,22 @@ public class QuesAnsEntity {
 
     public void setQuestionImage(String questionImage) {
         this.questionImage = questionImage;
+    }
+
+    public String getSolutionText() {
+        return solutionText;
+    }
+
+    public void setSolutionText(String solutionText) {
+        this.solutionText = solutionText;
+    }
+
+    public String getSolutionImage() {
+        return solutionImage;
+    }
+
+    public void setSolutionImage(String solutionImage) {
+        this.solutionImage = solutionImage;
     }
 
     public List<QuesAnsModel.Option> getOptionList() {

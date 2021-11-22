@@ -23,6 +23,7 @@ public class QuesAnsRepository {
     private OptionDao optionDao;
     private Context context;
     private LiveData<List<QuesAnsEntity>> allQuesAns;
+    private LiveData<List<OptionEntity>> allOptions;
 
     public QuesAnsRepository(Context context) {
         this.context = context;
@@ -30,6 +31,7 @@ public class QuesAnsRepository {
         optionDao = QuesAnsDatabase.getInstance(context).optionDao();
         fetchDataFromJson();
         allQuesAns = quesAnsDao.getAllQuesAns();
+        allOptions = optionDao.getAllOptions();
     }
 
     public void fetchDataFromJson() {
@@ -52,7 +54,9 @@ public class QuesAnsRepository {
                     getQuesTag(quesAnsModel),
                     quesAnsModel.getQuestion().getQuestionText(),
                     quesAnsModel.getQuestion().getImage(),
-                    quesAnsModel.getOptions()
+                    quesAnsModel.getOptions(),
+                    quesAnsModel.getSolution().getText(),
+                    quesAnsModel.getSolution().getImage()
             );
 
             quesAnsEntityList.add(quesAnsEntity);
@@ -104,17 +108,21 @@ public class QuesAnsRepository {
         return allQuesAns;
     }
 
-    public List<OptionEntity> getOptionEntityList() {
-        List<OptionEntity> optionEntities = new ArrayList<>();
-        try {
-            Completable.fromAction(() -> {
-                optionEntities.addAll(optionDao.getAllOptions());
-            }).subscribeOn(Schedulers.io())
-                    .subscribe();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return optionEntities;
+//    public List<OptionEntity> getOptionEntityList() {
+//        List<OptionEntity> optionEntities = new ArrayList<>();
+//        try {
+//            Completable.fromAction(() -> {
+//                optionEntities.addAll(optionDao.getAllOptions());
+//            }).subscribeOn(Schedulers.io())
+//                    .subscribe();
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return optionEntities;
+//    }
+
+    public LiveData<List<OptionEntity>> getOptionEntityList() {
+        return allOptions;
     }
 }

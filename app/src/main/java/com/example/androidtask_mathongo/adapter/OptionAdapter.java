@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.androidtask_mathongo.R;
 import com.example.androidtask_mathongo.local.entity.OptionEntity;
 import com.example.androidtask_mathongo.local.entity.QuesAnsEntity;
 import com.example.androidtask_mathongo.model.QuesAnsModel;
+import com.example.androidtask_mathongo.util.Constants;
 import com.google.android.material.card.MaterialCardView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
     private OnItemClickListener mListener;
     private int quesPosition;
     private Context context;
+    private String whyUpdate;
 
     public OptionAdapter(List<QuesAnsEntity> quesAnsEntityList, int quesPosition, Context context,
                          List<OptionEntity> optionEntityList) {
@@ -31,10 +34,11 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         this.quesPosition = quesPosition;
         this.context = context;
         this.optionEntityList = optionEntityList;
+        this.whyUpdate = "";
     }
 
     public interface OnItemClickListener {
-        void onClick(int position);
+        void onClick(int position, boolean isClickable);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -46,7 +50,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
     public OptionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_option,
                 parent, false);
-        return new OptionViewHolder(view, mListener, context);
+        return new OptionViewHolder(view, mListener, true);
     }
 
     @Override
@@ -54,11 +58,36 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         QuesAnsModel.Option option = quesAnsEntityList.get(quesPosition).getOptionList().get(position);
         holder.textViewAlphabet.setText(String.valueOf((char)(65 + position)));
         holder.textViewOption.setText(option.getOptionText());
-        if(isSelected(quesAnsEntityList.get(quesPosition), position)) {
-            holder.setOnClickOption(context);
+
+        //this condition checks if the question's answer is already checked
+        if(isChecked(quesAnsEntityList.get(quesPosition))) {
+            //setListener is called in order to make cards not clickable
+            holder.setListener(mListener, false);
+
+            //this condition shows the right card position
+            if (checkAnswer(position)) {
+                holder.rightAnswerState(context);
+            }
+
+            //this condition checks if card is selected and is wrong then show it
+            if(!checkAnswer(position) && isSelected(quesAnsEntityList.get(quesPosition), position)) {
+                holder.wrongAnswerState(context);
+            }
         }
         else {
-            holder.setRemoveClickOption(context);
+            if(isSelected(quesAnsEntityList.get(quesPosition), position)) {
+                holder.setOnClickOption(context);
+            }
+            else {
+                holder.setRemoveClickOption(context);
+            }
+        }
+        //this condition checks if the list was updated for check answer, then show the correct option
+        if(whyUpdate.equals(Constants.CHECK_ANSWER) && option.isCorrect()) {
+            //setListener is called in order to make cards not clickable
+            holder.setListener(mListener, false);
+
+            holder.rightAnswerState(context);
         }
     }
 
@@ -66,6 +95,16 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         for(OptionEntity optionEntity : optionEntityList) {
             if(optionEntity.getQuesId().equals(quesAnsEntity.getId()) &&
                     optionEntity.getOptionId().equals(quesAnsEntity.getOptionList().get(position).getId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isChecked(QuesAnsEntity quesAnsEntity) {
+        for(OptionEntity optionEntity : optionEntityList) {
+            if(optionEntity.getQuesId().equals(quesAnsEntity.getId())) {
                 return optionEntity.isChecked();
             }
         }
@@ -73,9 +112,15 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         return false;
     }
 
-    public void updateList(List<QuesAnsEntity> quesAnsEntities, List<OptionEntity> optionEntities) {
+    private boolean checkAnswer(int optionPosition) {
+        return quesAnsEntityList.get(quesPosition).getOptionList().get(optionPosition).isCorrect();
+    }
+
+    //whyUpdate tells the reason of update
+    public void updateList(List<QuesAnsEntity> quesAnsEntities, List<OptionEntity> optionEntities, String whyUpdate) {
         quesAnsEntityList = new ArrayList<>(quesAnsEntities);
         optionEntityList = new ArrayList<>(optionEntities);
+        this.whyUpdate = whyUpdate;
         notifyDataSetChanged();
     }
 
@@ -94,7 +139,7 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         private TextView textViewAnsType;
 
 
-        public OptionViewHolder(@NonNull View itemView, OnItemClickListener listener, Context context) {
+        public OptionViewHolder(@NonNull View itemView, OnItemClickListener listener, boolean isClickable) {
             super(itemView);
             textViewAlphabet = itemView.findViewById(R.id.text_view_option_alphabet);
             textViewOption = itemView.findViewById(R.id.text_view_option);
@@ -103,13 +148,16 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
             cardViewAnsType = itemView.findViewById(R.id.card_view_ans_type);
             textViewAnsType = itemView.findViewById(R.id.text_view_ans_type);
 
+            setListener(listener, isClickable);
+        }
+
+        private void setListener(OnItemClickListener listener, boolean isClickable) {
             itemView.setOnClickListener(view -> {
                 if(listener != null) {
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION) {
-                        listener.onClick(position);
+                        listener.onClick(position, isClickable);
                     }
-                    setOnClickOption(context);
                 }
             });
         }
@@ -122,6 +170,18 @@ public class OptionAdapter extends RecyclerView.Adapter<OptionAdapter.OptionView
         private void setRemoveClickOption(Context context) {
             cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(R.color.option_unselected_color));
             cardViewOption.setStrokeColor(context.getResources().getColor(R.color.option_unselected_color));
+        }
+
+        private void rightAnswerState(Context context) {
+            cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(
+                    R.color.right_ans_color));
+            cardViewOption.setStrokeColor(context.getResources().getColor(R.color.right_ans_color));
+        }
+
+        private void wrongAnswerState(Context context) {
+            cardViewAlphabet.setCardBackgroundColor(context.getResources().getColor(
+                    R.color.wrong_ans_color));
+            cardViewOption.setStrokeColor(context.getResources().getColor(R.color.wrong_ans_color));
         }
     }
 }

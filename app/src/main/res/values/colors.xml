@@ -15,4 +15,6 @@
     <color name="blue_theme">#1589EE</color>
     <color name="blue_light_theme">#E8F3FD</color>
     <color name="option_unselected_color">#EBECEF</color>
+    <color name="right_ans_color">#31D99C</color>
+    <color name="wrong_ans_color">#FF5858</color>
 </resources>
